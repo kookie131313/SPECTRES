@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
+// Sentinel Encoder Feed: continuous matrix-style display, identity-masked.
 const CODE_NAME = "SENTINEL";
 
 // Brief data streams. Edit these entries as new briefs arrive.
@@ -72,6 +73,17 @@ const FEEDS = [
       "PRESENCE: full attention on one speaker, no interruptions",
       "MAGNETISM: recall one genuine compliment to give today",
       "SPEAKING: one story told with deliberate pace and pause",
+    ],
+  },
+  {
+    channel: "HARM REDUCTION",
+    color: "#22d3ee",
+    entries: [
+      "CHECK-IN: notice one habit pattern without judgment today",
+      "SUBSTITUTION: swap one taxing activity for a lighter alternative",
+      "BOUNDARIES: set one clear limit and hold it kindly",
+      "SAFETY: keep supports and professional resources within reach",
+      "POSTURE: reduce risk, respect autonomy, never shame or punish",
     ],
   },
   {
@@ -195,7 +207,7 @@ export default function App() {
         </main>
 
         <footer className="border-t border-emerald-800/50 px-6 py-3 bg-[#02060c]/80 text-[10px] font-mono tracking-[0.3em] text-emerald-800">
-          CHANNELS: MOTOR/SPEECH // READING/WRITING // LITERATURE/STYLE // WEALTH/LOGIC // HEALTH/WELL-BEING // CHARISMA/MAGNETISM // SECURITY // THREAT SCAN
+          CHANNELS: MOTOR/SPEECH // READING/WRITING // LITERATURE/STYLE // WEALTH/LOGIC // HEALTH/WELL-BEING // CHARISMA/MAGNETISM // HARM REDUCTION // SECURITY // THREAT SCAN
           <span className="mx-2 text-emerald-500">|</span>
           ROLLING REPORT CHAIN ACTIVE
           <span className="mx-2 text-emerald-500">|</span>
