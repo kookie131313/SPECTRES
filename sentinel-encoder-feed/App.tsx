@@ -65,6 +65,16 @@ const FEEDS = [
     ],
   },
   {
+    channel: "CHARISMA / MAGNETISM",
+    color: "#f472b6",
+    entries: [
+      "CONFIDENCE: one posture and eye-contact practice in a real interaction",
+      "PRESENCE: full attention on one speaker, no interruptions",
+      "MAGNETISM: recall one genuine compliment to give today",
+      "SPEAKING: one story told with deliberate pace and pause",
+    ],
+  },
+  {
     channel: "THREAT SCAN / INJECTION WATCH",
     color: "#f87171",
     entries: [
@@ -131,7 +141,7 @@ function Ticker({ channel, color, entries }) {
       <div className="text-[10px] tracking-[0.35em] mb-1 px-4" style={{ color }}>
         {channel} // CONTINUOUS
       </div>
-      <div className="flex ticker-loop" style={{ animationDuration: entries.length * 12 + "s" }}>
+      <div className="flex ticker-loop" style={{ animationDuration: `${entries.length * 12}s` }}>
         {row.map((entry, i) => (
           <span key={i} className="mx-6 text-sm text-emerald-100/90 font-mono">
             <span style={{ color }}>{">"}</span> {entry}
@@ -185,7 +195,7 @@ export default function App() {
         </main>
 
         <footer className="border-t border-emerald-800/50 px-6 py-3 bg-[#02060c]/80 text-[10px] font-mono tracking-[0.3em] text-emerald-800">
-          CHANNELS: MOTOR/SPEECH // READING/WRITING // LITERATURE/STYLE // WEALTH/LOGIC // HEALTH/WELL-BEING // SECURITY // THREAT SCAN
+          CHANNELS: MOTOR/SPEECH // READING/WRITING // LITERATURE/STYLE // WEALTH/LOGIC // HEALTH/WELL-BEING // CHARISMA/MAGNETISM // SECURITY // THREAT SCAN
           <span className="mx-2 text-emerald-500">|</span>
           ROLLING REPORT CHAIN ACTIVE
           <span className="mx-2 text-emerald-500">|</span>
