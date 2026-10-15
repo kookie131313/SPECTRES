@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-// Sentinel Encoder Feed: continuous matrix-style display, identity-masked.
+// Sentinel Encoder Feed: continuous matrix-style display, identity-masked, nine channels.
 const CODE_NAME = "SENTINEL";
 
 // Brief data streams. Edit these entries as new briefs arrive.
@@ -153,7 +153,7 @@ function Ticker({ channel, color, entries }) {
       <div className="text-[10px] tracking-[0.35em] mb-1 px-4" style={{ color }}>
         {channel} // CONTINUOUS
       </div>
-      <div className="flex ticker-loop" style={{ animationDuration: `${entries.length * 12}s` }}>
+      <div className="flex ticker-loop" style={{ animationDuration: `${entries.length * 22}s` }}>
         {row.map((entry, i) => (
           <span key={i} className="mx-6 text-sm text-emerald-100/90 font-mono">
             <span style={{ color }}>{">"}</span> {entry}
