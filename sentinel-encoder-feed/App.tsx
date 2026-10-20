@@ -101,13 +101,35 @@ const FEEDS = [
 
 const GLYPHS = "01ABCDEFXYZ#$%&*+=<>/\\|{}[]";
 
+// Hardening: validate and sanitize all feed data before rendering.
+// Entries are strings only; anything unexpected is dropped, never rendered.
+const safeEntries = (entries) =>
+  Array.isArray(entries)
+    ? entries.filter((e) => typeof e === "string" && e.length > 0 && e.length <= 300).slice(0, 12)
+    : [];
+
+const SAFE_FEEDS = FEEDS.filter(
+  (f) =>
+    f &&
+    typeof f.channel === "string" &&
+    f.channel.length > 0 &&
+    f.channel.length <= 60 &&
+    /^#[0-9a-fA-F]{6}$/.test(String(f.color || ""))
+).map((f) => ({ channel: f.channel, color: f.color, entries: safeEntries(f.entries) }))
+ .filter((f) => f.entries.length > 0);
+
 function useMatrixRain() {
   const ref = useRef(null);
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    // Hardening: honor reduced-motion preference; render a static backdrop instead.
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
     let raf;
+    let disposed = false;
     let cols;
     let drops;
     const fontSize = 14;
@@ -122,6 +144,7 @@ function useMatrixRain() {
     window.addEventListener("resize", resize);
 
     const tick = () => {
+      if (disposed) return;
       ctx.fillStyle = "rgba(2, 6, 12, 0.08)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.font = fontSize + "px monospace";
@@ -139,11 +162,36 @@ function useMatrixRain() {
     };
     raf = requestAnimationFrame(tick);
     return () => {
+      disposed = true;
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
     };
   }, []);
   return ref;
+}
+
+// Hardening: error boundary so a single render failure cannot blank the display.
+class FeedBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { failed: false };
+  }
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    // Hardening: swallow render faults; the feed degrades to a status line.
+  }
+  render() {
+    if (this.state.failed) {
+      return (
+        <div className="p-6 font-mono text-sm text-emerald-500">
+          FEED FAULT :: channel render failed, loop halted safely. Reload to restore.
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 function Ticker({ channel, color, entries }) {
@@ -178,7 +226,7 @@ export default function App() {
   }, []);
 
   const rotated = useMemo(() => {
-    return FEEDS.map((feed) => ({
+    return SAFE_FEEDS.map((feed) => ({
       ...feed,
       entries: feed.entries.map((_, i) => feed.entries[(i + frame) % feed.entries.length]),
     }));
@@ -201,9 +249,11 @@ export default function App() {
         </header>
 
         <main className="flex-1 flex flex-col justify-center bg-[#02060c]/70">
-          {rotated.map((feed) => (
-            <Ticker key={feed.channel} channel={feed.channel} color={feed.color} entries={feed.entries} />
-          ))}
+          <FeedBoundary>
+            {rotated.map((feed) => (
+              <Ticker key={feed.channel} channel={feed.channel} color={feed.color} entries={feed.entries} />
+            ))}
+          </FeedBoundary>
         </main>
 
         <footer className="border-t border-emerald-800/50 px-6 py-3 bg-[#02060c]/80 text-[10px] font-mono tracking-[0.3em] text-emerald-800">
