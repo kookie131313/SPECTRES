@@ -30,7 +30,7 @@ const FEEDS = [
     color: "#c084fc",
     entries: [
       "STYLE: compression pass, cut 20 percent of a draft",
-      "TREND: literary minimalism and fragmented narration hold momentum",
+      "TREND: autofiction and hybrid memoir forms gaining critical momentum",
       "CONTEXT: ground every claim in one concrete image",
       "VOICE: read a favored author aloud, mirror sentence rhythm",
     ],
@@ -43,6 +43,7 @@ const FEEDS = [
       "CONTINUITY: confirm offline copy of all brief archives",
       "HYGIENE: rotate one reused credential today",
       "PRACTICE: no personal identifiers in logs or generated files",
+      "POSTURE: passkeys over passwords where supported this quarter",
     ],
   },
   {
@@ -197,16 +198,22 @@ class FeedBoundary extends React.Component {
 function Ticker({ channel, color, entries }) {
   const row = [...entries, ...entries];
   return (
-    <div className="border-b border-emerald-900/40 py-3 overflow-hidden whitespace-nowrap">
-      <div className="text-[10px] tracking-[0.35em] mb-1 px-4" style={{ color }}>
-        {channel} // CONTINUOUS
+    <div className="ticker-row group border-b border-emerald-900/40 py-3 overflow-hidden whitespace-nowrap">
+      <div className="flex items-center gap-2 mb-1 px-4">
+        <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: color, boxShadow: `0 0 6px ${color}` }} />
+        <span className="text-[10px] tracking-[0.35em] font-mono" style={{ color }}>
+          {channel}
+        </span>
+        <span className="text-[9px] tracking-[0.2em] text-emerald-800 font-mono">// CONTINUOUS</span>
       </div>
-      <div className="flex ticker-loop" style={{ animationDuration: `${entries.length * 22}s` }}>
-        {row.map((entry, i) => (
-          <span key={i} className="mx-6 text-sm text-emerald-100/90 font-mono">
-            <span style={{ color }}>{">"}</span> {entry}
-          </span>
-        ))}
+      <div className="ticker-mask">
+        <div className="flex ticker-loop group-hover:[animation-play-state:paused]" style={{ animationDuration: `${entries.length * 22}s` }}>
+          {row.map((entry, i) => (
+            <span key={i} className="mx-6 text-sm text-emerald-100/90 font-mono">
+              <span style={{ color }}>{">"}</span> {entry}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -236,16 +243,27 @@ export default function App() {
     <div className="relative min-h-screen bg-[#02060c] text-emerald-200 overflow-hidden">
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-40" />
       <div className="relative z-10 flex flex-col min-h-screen">
-        <header className="border-b border-emerald-800/50 px-6 py-4 flex items-center justify-between bg-[#02060c]/80">
+        <header className="border-b border-emerald-800/50 px-6 py-4 flex items-center justify-between bg-[#02060c]/80 backdrop-blur-sm">
           <div>
-            <div className="font-mono text-xl tracking-[0.5em] text-emerald-400">
+            <div className="font-mono text-xl tracking-[0.5em] text-emerald-400" style={{ textShadow: "0 0 12px rgba(52,211,153,0.45)" }}>
               {CODE_NAME} :: ENCODER FEED
             </div>
-            <div className="text-[10px] tracking-[0.3em] text-emerald-700 font-mono">
-              LOOP ACTIVE // CYCLE {String(frame).padStart(6, "0")} // IDENTITY MASKED
+            <div className="flex items-center gap-3 mt-2 text-[10px] tracking-[0.3em] text-emerald-700 font-mono">
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                LOOP ACTIVE
+              </span>
+              <span>CYCLE {String(frame).padStart(6, "0")}</span>
+              <span className="flex items-center gap-1.5 text-emerald-600">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                IDENTITY MASKED
+              </span>
             </div>
           </div>
-          <div className="font-mono text-emerald-500 text-lg tabular-nums">{clock}</div>
+          <div className="text-right">
+            <div className="font-mono text-emerald-500 text-lg tabular-nums" style={{ textShadow: "0 0 10px rgba(16,185,129,0.35)" }}>{clock}</div>
+            <div className="text-[9px] font-mono tracking-[0.25em] text-emerald-800 mt-1">9 CHANNELS // ALL CLEAR</div>
+          </div>
         </header>
 
         <main className="flex-1 flex flex-col justify-center bg-[#02060c]/70">
@@ -279,6 +297,11 @@ export default function App() {
           animation-timing-function: linear;
           animation-iteration-count: infinite;
           will-change: transform;
+        }
+        .ticker-mask {
+          overflow: hidden;
+          mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
         }
       `}</style>
     </div>
